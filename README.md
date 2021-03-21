@@ -17,7 +17,7 @@ aws s3 sync dist/angular-httpclient-converttime s3://angular-httpclient-serverda
 
 ## To Test
 To test if the application is working, visit the AWS S3 Endpoint in your chosen browser:
-
+![Angular Application Screenshot](https://github.com/tyronnelazaro/angular-httpclient-converttime/blob/main/angular-application-screenshot.png)
 
 # The Pre-requisites
 - Node.js
@@ -46,7 +46,7 @@ To test if the application is working, visit the AWS S3 Endpoint in your chosen 
 ## Component
 3. Create a component to access all REST API service call that use HttpClient from the module. (ng g component time)
   - at ngOnInit, getServertime's results will subscribe to Convertedtime interface
-  - getConvertedtime's dependency on epoch will get its value from timeconvert.epoch 
+  - getConvertedtime's dependency on epoch will get its value from timeconvert.epoch
   - getConvertedtime's result will subscribe to timeconverted placeholder.
 
 ## Component HTML
