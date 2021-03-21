@@ -1,0 +1,137 @@
+
+gitUrl = 'https://github.com/tyronnelazaro/angular-httpclient-converttime.git'
+gitbranchDevOps = 'main'
+
+def AssumeRole(roleId, accountId) {
+	//unset env.AWS_ACCESS_KEY_ID env.AWS_SECRET_ACCESS_KEY env.AWS_SESSION_TOKEN env.AWS_SECURITY_TOKEN
+	def credsJSON = sh script: "aws sts assume-role --role-session-name role --role-arn arn:aws:iam::${accountId}:role/${roleId} --output json", returnStdout: true
+	def creds = readJSON text: credsJSON
+	env.AWS_ACCESS_KEY_ID = creds.Credentials.AccessKeyId
+	env.AWS_SECRET_ACCESS_KEY = creds.Credentials.SecretAccessKey
+	env.AWS_SESSION_TOKEN = creds.Credentials.SessionToken
+	env.AWS_SECURITY_TOKEN = creds.Credentials.SessionToken
+}
+
+pipeline {
+	agent {
+		label "angular-node"
+	}
+
+	stages {
+		stage("Switch Environment") {
+			steps {
+				script {
+					switch(DEPLOY_ENV) {
+						case "prod":
+							aws_region = 'us-east-2'
+							bucketname = 'angular-httpclient-serverdate'
+              role = 'Jenkins-taskrole'
+							AccountID = 'aws-account-id-for-prod'
+							gitCreds = 'jenkins-credentials-for-prod'
+							buildparam = '--prod'
+							break
+            case "uat":
+							aws_region = 'us-east-2'
+							bucketname = 'uat-angular-httpclient-serverdate'
+              role = 'Jenkins-taskrole'
+							AccountID = 'aws-account-id-for-uat'
+							gitCreds = 'jenkins-credentials-for-uat'
+							buildparam = ''
+							break
+            case "qa":
+							aws_region = 'us-east-1'
+							bucketname = 'qa-angular-httpclient-serverdate'
+              role = 'Jenkins-taskrole'
+							AccountID = 'aws-account-id-for-qa'
+							gitCreds = 'jenkins-credentials-for-qa'
+							buildparam = ''
+							break
+            case "dev":
+							aws_region = 'us-east-1'
+							bucketname = 'dev-angular-httpclient-serverdate'
+              role = 'Jenkins-taskrole'
+							AccountID = 'aws-account-id-for-dev'
+							gitCreds = 'jenkins-credentials-for-dev'
+							buildparam = ''
+							break
+						default:
+							currentBuild.result = 'FAILURE'
+							error "Guess what, build failed, as \"${DEPLOY_ENV}\" is not a defined environment"
+					}
+				}
+			}
+		}
+
+		stage("Clone_Git_Branch") {
+			steps {
+				script {
+					dir('Git-Branch') {
+							git branch: gitBranch, credentialsId: gitCreds, url: gitUrl
+					}
+				currentBuild.displayName = "${job_name}-${branch_tag}"
+				}
+			}
+		}
+
+		stage("Assume Role") {
+			steps {
+				script {
+					dir('Deploy') {
+						AssumeRole("${role}","${AccountID}")
+					}
+				}
+			}
+		}
+
+		stage("Angular Build") {
+			steps {
+				script {
+				  dir('Git-Branch') {
+            sh "ng build $buildparam"
+					}
+				}
+			}
+		}
+
+		stage("Assume Role") {
+			steps {
+				script {
+					dir('Deploy') {
+						AssumeRole("${role}","${AccountID}")
+					}
+				}
+			}
+		}
+
+    stage("Upload to S3") {
+      steps {
+        script {
+          dir('Git-Branch') {
+            sh "aws s3 sync dist/angular-httpclient-converttime s3://${bucketname}"
+          }
+        }
+      }
+    }
+	}
+
+	post {
+		success {
+			script {
+				currentBuild.result = "SUCCESS"
+				echo currentBuild.result
+			}
+		}
+
+		failure {
+			script {
+				currentBuild.result = "FAILURE"
+				echo currentBuild.result
+			}
+		}
+
+		cleanup { //after every other post condition has been evaluated, regardless of the Pipeline or stage’s status
+			println('Cleaning up workspace...')
+			cleanWs deleteDirs: true
+		}
+	}
+}
