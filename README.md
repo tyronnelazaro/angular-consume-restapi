@@ -17,6 +17,7 @@ aws s3 sync dist/angular-httpclient-converttime s3://angular-httpclient-serverda
 
 ## To Test
 To test if the application is working, visit the AWS S3 Endpoint in your chosen browser:
+•	http://angular-httpclient-serverdate.s3-website.us-east-2.amazonaws.com/
 ![Angular Application Screenshot](https://github.com/tyronnelazaro/angular-httpclient-converttime/blob/main/angular-application-screenshot.png)
 
 # The Pre-requisites
