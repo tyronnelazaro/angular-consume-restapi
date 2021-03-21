@@ -21,6 +21,8 @@ To test if the application is working, visit the AWS S3 Endpoint in your chosen 
 http://angular-httpclient-serverdate.s3-website.us-east-2.amazonaws.com/
 ![Angular Application Screenshot](https://github.com/tyronnelazaro/angular-httpclient-converttime/blob/main/angular-application-screenshot.png)
 
+NOTE: There will be a few seconds delay in showing the actual data the first time due to cold start of the Lambda function. Additional code improvements can be included to keep the Lambda function warm. 
+
 # The Pre-requisites
 - Node.js
 - Angular
