@@ -57,12 +57,12 @@ NOTE: There will be a few seconds delay in showing the actual data the first tim
 4. To display the source server time and converted time:
   - Source Server time: We converted the Source API epoch time from seconds to milliseconds (multiply by 1000) and formatted the date to UTC (timezone of the source api server).
 ```bash
-{{timeconvert.epoch * 1000 | date:'medium':'+0000'}}
+{{timeconvert.epoch * 1000 | date:'medium':'+0000'}} {{timeconverted.fromAbbreviation}}
 ```
   - Converted Time: Same as the source server time; convert to milliseconds and format the date to UTC.
   - Since TimezoneDB API already converted our source server time to UTC+8, we need to offset the conversion and set the timezone to UTC to avoid converting the output time to user's locale.
 ```bash
-{{timeconverted.toTimestamp * 1000 | date:'medium':'+0000'}}
+{{timeconverted.toTimestamp * 1000 | date:'medium':'+0000'}} {{timeconverted.toAbbreviation}}
 ```
 
 ## Routing
