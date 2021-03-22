@@ -6,6 +6,8 @@ import { Observable, throwError } from 'rxjs';
 export interface Convertedtime {
   epoch: number;
   toTimestamp: number;
+  fromAbbreviation: string;
+  toAbbreviation: string;
 
 }
 

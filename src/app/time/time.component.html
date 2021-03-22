@@ -1,5 +1,5 @@
 <!-- Lambda Source Date (in UTC) multiplied by 1000 to get epoch in milliseconds -->
-<H1> {{timeconvert.epoch * 1000 | date:'medium':'+0000'}}</H1>
+<H1> {{timeconvert.epoch * 1000 | date:'medium':'+0000'}} {{timeconverted.fromAbbreviation}}</H1>
 
 <style>
   .toolbar {
@@ -95,4 +95,4 @@
 <!-- TimezoneDB Convertion Date from backend API input  -->
 <!-- multiplied by 1000 to get epoch in milliseconds -->
 <!-- Timezone set to UTC still, since timezoneDB API already converted the time to UTC+8 -->
-<H1> {{timeconverted.toTimestamp * 1000 | date:'medium':'+0000'}}</H1>
+<H1> {{timeconverted.toTimestamp * 1000 | date:'medium':'+0000'}} {{timeconverted.toAbbreviation}}</H1>
