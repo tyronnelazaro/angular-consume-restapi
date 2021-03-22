@@ -21,7 +21,7 @@ To test if the application is working, visit the AWS S3 Endpoint in your chosen 
 http://angular-httpclient-serverdate.s3-website.us-east-2.amazonaws.com/
 ![Angular Application Screenshot](https://github.com/tyronnelazaro/angular-httpclient-converttime/blob/main/angular-application-screenshot.png)
 
-NOTE: There will be a few seconds delay in showing the actual data the first time due to cold start of the Lambda function. Additional code improvements can be included to keep the Lambda function warm. 
+NOTE: There will be a few seconds delay in showing the actual data the first time due to cold start of the Lambda function. Additional code improvements can be included to keep the Lambda function warm.
 
 # The Pre-requisites
 - Node.js
@@ -56,19 +56,19 @@ NOTE: There will be a few seconds delay in showing the actual data the first tim
 ## Component HTML
 4. To display the source server time and converted time:
   - Source Server time: We converted the Source API epoch time from seconds to milliseconds (multiply by 1000) and formatted the date to UTC (timezone of the source api server).
-```json
+```bash
 {{timeconvert.epoch * 1000 | date:'medium':'+0000'}}
 ```
   - Converted Time: Same as the source server time; convert to milliseconds and format the date to UTC.
   - Since TimezoneDB API already converted our source server time to UTC+8, we need to offset the conversion and set the timezone to UTC to avoid converting the output time to user's locale.
-```json
+```bash
 {{timeconverted.toTimestamp * 1000 | date:'medium':'+0000'}}
 ```
 
 ## Routing
 5. Since the application will be uploaded to S3, which /paths are not applicable. We ensure that the routing is at the root URL.
   - In src/app/app-routing.module.ts, set the route as follows:
-```json
+```bash
   {
     path: '',
     component: TimeComponent,
